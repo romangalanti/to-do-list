@@ -119,7 +119,7 @@ public class ToDoItemRepository {
 				printer.printRecord(record);
 			}
 		} catch (IOException ioe) {
-			System.out.println("Could not create record in csv file.");
+			System.out.println("Could not update record in csv file.");
 		}
 
 	}
