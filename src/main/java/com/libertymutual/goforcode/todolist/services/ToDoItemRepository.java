@@ -20,25 +20,26 @@ public class ToDoItemRepository {
 
 	private int nextId = 1;
 	private ArrayList<ToDoItem> itemList;
-	
+
 	public ToDoItemRepository() {
-		
+
 	}
-	
+
 	/**
 	 * Get all the items from the file.
 	 * 
 	 * @return A list of the items. If no items exist, returns an empty list.
 	 */
 	public List<ToDoItem> getAll() {
-		
-		try (FileReader reader = new FileReader("todolist.csv"); CSVParser parser = new CSVParser(reader, CSVFormat.RFC4180);) {
-			
-		List<CSVRecord> record = CSVFormat.DEFAULT.parse(reader).getRecords();
-		itemList = new ArrayList<ToDoItem>();
-		int existingID = 0;
-		
-			for (CSVRecord current: record) {
+
+		try (FileReader reader = new FileReader("todolist.csv");
+				CSVParser parser = new CSVParser(reader, CSVFormat.RFC4180);) {
+
+			List<CSVRecord> record = CSVFormat.DEFAULT.parse(reader).getRecords();
+			itemList = new ArrayList<ToDoItem>();
+			int existingID = 0;
+
+			for (CSVRecord current : record) {
 				ToDoItem item = new ToDoItem();
 				item.setId(Integer.parseInt(current.get(0)));
 				item.setText(current.get(1));
@@ -47,19 +48,19 @@ public class ToDoItemRepository {
 				if (Integer.parseInt(current.get(0)) > existingID) {
 					existingID = Integer.parseInt(current.get(0));
 				}
-				
+
 				nextId = existingID + 1;
-			} 	
-		}	catch (IOException ioe) {
+			}
+		} catch (IOException ioe) {
 			System.out.println("Could not read the record in the file.");
 		}
-		
+
 		if (itemList.size() == 0) {
 			return Collections.emptyList();
 		}
-		
+
 		return itemList;
-		
+
 	}
 
 	/**
@@ -71,8 +72,9 @@ public class ToDoItemRepository {
 	public void create(ToDoItem item) {
 		item.setId(nextId);
 		nextId += 1;
-		try (FileWriter writer = new FileWriter("todolist.csv", true); CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180)) {
-			String[] record = {Integer.toString((item.getId())), item.getText(), Boolean.toString(item.isComplete())};
+		try (FileWriter writer = new FileWriter("todolist.csv", true);
+				CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180)) {
+			String[] record = { Integer.toString((item.getId())), item.getText(), Boolean.toString(item.isComplete()) };
 			printer.printRecord(record);
 		} catch (IOException ioe) {
 			System.out.println("Could not create record in csv file.");
@@ -87,7 +89,12 @@ public class ToDoItemRepository {
 	 * @return The ToDoItem with the specified id or null if none is found.
 	 */
 	public ToDoItem getById(int id) {
-		
+
+		for (ToDoItem current : itemList) {
+			if (current.getId() == id) {
+				return current;
+			}
+		}
 		return null;
 	}
 
@@ -98,7 +105,22 @@ public class ToDoItemRepository {
 	 *            The item to update.
 	 */
 	public void update(ToDoItem item) {
-		
-	}
+		for (ToDoItem current : itemList) {
+			if (current.getId() == item.getId()) {
+				item.setComplete(true);
+			}
+		}
+		try (FileWriter writer = new FileWriter("todolist.csv");
+				CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180)) {
 
+			for (ToDoItem current1 : itemList) {
+				String[] record = { Integer.toString((current1.getId())), current1.getText(),
+						Boolean.toString(current1.isComplete()) };
+				printer.printRecord(record);
+			}
+		} catch (IOException ioe) {
+			System.out.println("Could not create record in csv file.");
+		}
+
+	}
 }
