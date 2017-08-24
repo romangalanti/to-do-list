@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Get Stuff Done!</title>
+  </head>
+  <body>
+    <div class="to-do-input-holder">
+      <form method="post" action="/todos">
+        <input autofocus required type="text" name="text" placeholder="to-do item">
+        <button class="call-to-action">Create</button>
+      </form>
+    </div>
+    <div>
+      {{#hasToDoItems}}
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#toDoItems}}
+              <tr {{#isComplete}}style="color: #CCC"{{/isComplete}}>
+                <td>{{ text }}</td>
+                <td>
+                  {{#isIncomplete}}
+                    <form method="post" action="/todos/{{ id }}/delete">
+                      <button>Finish</button>
+                    </form>
+                  {{/isIncomplete}}
+                 </td>
+              </tr>
+            {{/toDoItems}}
+          </tbody>
+        </table>
+      {{/hasToDoItems}}
+    </div>
+  </body>
+</html>
