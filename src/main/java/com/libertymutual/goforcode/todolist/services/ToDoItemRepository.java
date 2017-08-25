@@ -1,5 +1,6 @@
 package com.libertymutual.goforcode.todolist.services;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -51,8 +52,10 @@ public class ToDoItemRepository {
 
 				nextId = existingID + 1;
 			}
+		} catch (FileNotFoundException fnfe) {
+			System.err.println("Could not find file.");
 		} catch (IOException ioe) {
-			System.out.println("Could not read the record in the file.");
+			System.err.println("Could not read file.");
 		}
 
 		if (itemList.size() == 0) {
@@ -76,8 +79,10 @@ public class ToDoItemRepository {
 				CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180)) {
 			String[] record = { Integer.toString((item.getId())), item.getText(), Boolean.toString(item.isComplete()) };
 			printer.printRecord(record);
+		} catch (FileNotFoundException fnfe) {
+			System.err.println("Could not find file.");
 		} catch (IOException ioe) {
-			System.out.println("Could not create record in csv file.");
+			System.err.println("Could not read file.");
 		}
 	}
 
@@ -118,8 +123,10 @@ public class ToDoItemRepository {
 						Boolean.toString(current1.isComplete()) };
 				printer.printRecord(record);
 			}
+		} catch (FileNotFoundException fnfe) {
+			System.err.println("Could not find file.");
 		} catch (IOException ioe) {
-			System.out.println("Could not update record in csv file.");
+			System.err.println("Could not read file.");
 		}
 
 	}
